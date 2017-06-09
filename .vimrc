@@ -4,7 +4,7 @@
 
 " Store path to ~/.vim or ~/vimfile to variable $VIMHOME
 if has('win32') || has ('win64') || has('win16')
-        let $VIMHOME = $HOME.'\vimfiles'
+        let $VIMHOME = $VIM.'\vimfiles'
 else
         let $VIMHOME = $HOME.'/.vim'
 endif
@@ -251,13 +251,13 @@ if has('gui_running')
                 try
                         set guifont=monospace\ 10
                 catch
-                        echo "Font monospace was not set!"
+                        echo "Font Monospace was not set!"
                 endtry
         else
                 try
-                        set guifont=Lucida_Console:h10
+                        set guifont=Consolas:h10
                 catch
-                        echo "Font Lucida_Console missing!"
+                        echo "Font Consolas was not set!"
 	        endtry
         endif
 endif
@@ -349,7 +349,7 @@ onoremap <silent> zP <ESC>aX<LEFT><CR><DEL><C-o>d^<ESC>:.-1r <C-R>=$BUFF<CR><CR>
 inoremap jj <ESC>
 snoremap jj <ESC>
 
-" Automatically add closing for { ( [ ' " `i <
+" Automatically add closing for { ( [ ' " ` <
 inoremap { {<CR>}<ESC>kA<CR><TAB>
 inoremap ( ()<ESC>i
 inoremap [ []<ESC>i
@@ -364,7 +364,7 @@ cnoremap <C-j> <DOWN>
 cnoremap <C-k> <UP>
 cnoremap <C-l> <RIGHT>
 
-" Use ',' as mapleader instead if '/' 
+" Use ',' as mapleader instead of '/' 
 let mapleader = ","
 let g:mapleader = ","
 
