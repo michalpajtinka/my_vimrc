@@ -162,7 +162,7 @@ endfunction
 " Define custom highlight groups
 function! Highlight()
     	highlight User1 cterm=bold ctermbg=white ctermfg=black gui=bold guibg=#FFFFFF guifg=#000000
-    	highlight User2 cterm=bold ctermbg=white ctermfg=green gui=bold guibg=#FFFFFF guifg=#CC0000
+    	highlight User2 cterm=bold ctermbg=white ctermfg=red gui=bold guibg=#FFFFFF guifg=#CC0000
     	highlight StatusLineNC cterm=bold ctermbg=white ctermfg=black gui=bold guibg=#FFFFFF guifg=#888888
 endfunction
 
