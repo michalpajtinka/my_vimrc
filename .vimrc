@@ -103,7 +103,10 @@ set vb
 set tm=500
 set visualbell t_vb=
 if has("gui")
-        au GUIEnter * set t_vb=
+        augroup visual_bell
+                autocmd!
+                autocmd GUIEnter * set t_vb=
+        augroup END
 endif
 
 " Characters to fill the statuslines and vertical separators
@@ -457,7 +460,10 @@ nnoremap <LEADER>tt :tabedit <C-r>=expand("%:p:h")<CR><CR>
 " Toggle between this and the last accessed tab
 let g:lasttab = 1
 nnoremap <Leader><TAB> :exe "tabn ".g:lasttab<CR>
-au TabLeave * let g:lasttab = tabpagenr()
+augroup tab_leave
+        autocmd!
+        autocmd TabLeave * let g:lasttab = tabpagenr()
+augroup END
 
 " Switching buffers
 nnoremap <LEADER>bl :bnext<CR>
