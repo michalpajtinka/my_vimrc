@@ -97,7 +97,7 @@ set t_vb=
 set vb
 set tm=500
 set visualbell t_vb=
-if has("autocmd") && has("gui")
+if has("gui")
         au GUIEnter * set t_vb=
 endif
 
@@ -154,7 +154,7 @@ endfunction
 " Define custom highlight groups
 function! Highlight()
     	highlight User1 cterm=bold ctermbg=white ctermfg=black gui=bold guibg=#FFFFFF guifg=#000000
-    	highlight User2 cterm=bold ctermbg=white ctermfg=red gui=bold guibg=#FFFFFF guifg=#CC0000
+    	highlight User2 cterm=bold ctermbg=white ctermfg=green gui=bold guibg=#FFFFFF guifg=#CC0000
     	highlight StatusLineNC cterm=bold ctermbg=white ctermfg=black gui=bold guibg=#FFFFFF guifg=#888888
 endfunction
 
@@ -171,41 +171,47 @@ augroup end
 set statusline=%{SetModeColour()}                               " default colour, mode dependent
 set statusline+=%1*                                             " primary colour
 set statusline+=\                                               " padding space
-set statusline+=\<%n\>                                          " buffer number
+set statusline+=\<buf\ %n\>                                     " buffer number
 set statusline+=%{strlen(&bt)?'\ \|'.toupper(&bt).'\|':''}      " buffer type
 set statusline+=\                                               " padding space
 set statusline+=%*                                              " default colour
 set statusline+=\                                               " padding space
-set statusline+=\-\-\-\                                         " mode separator
 set statusline+=%{g:currentmode[mode()]}                        " current mode
 set statusline+=\                                               " padding space
 set statusline+=%{&paste?'(paste)\ ':''}                        " paste status
-set statusline+=\-\-\-\                                         " mode separator
 set statusline+=%1*                                             " primary colour
 set statusline+=\                                               " padding space
 set statusline+=\"%t\"                                          " file name
 set statusline+=\                                               " padding space
 set statusline+=%<                                              " truncate point
 set statusline+=%{strlen(&ft)?'\|'.&ft.'\|\ ':''}               " filetype
-set statusline+=%2*                                             " secondary colour
-set statusline+=>\ %{toupper(&ff)}\                             " file format
-set statusline+=%{strlen(&fenc)?'>\ '.toupper(&fenc).'\ ':''}   " file encoding
-set statusline+=%{&mod?'>\ MODIFIED\ ':''}                      " modified
-set statusline+=%{&ma?'':'>\ UNMODIFIABLE\ '}                   " modifiable
-set statusline+=%{&ro?'>\ READ\ ONLY\ ':''}                     " read only
-set statusline+=%{&pvw?'>\ PREVIEW\ ':''}                       " preview window
-set statusline+=%{&bin?'>\ BINARY\ ':''}                        " binary
+set statusline+=%*                                              " default colour
+set statusline+=\                                               " padding space
+set statusline+=>\ %{toupper(&ff)}\ >\                          " file format
+set statusline+=%{strlen(&fenc)?toupper(&fenc).'\ >\ ':''}      " file encoding
+set statusline+=%{&mod?'MODIFIED\ >\ ':''}                      " modified
+set statusline+=%{&ma?'':'UNMODIFIABLE\ >\ '}                   " modifiable
+set statusline+=%{&ro?'READ\ ONLY\ >\ ':''}                     " read only
+set statusline+=%{&pvw?'PREVIEW\ >\ ':''}                       " preview window
+set statusline+=%{&bin?'BINARY\ >\ ':''}                        " binary
 set statusline+=%=                                              " left/right break
-set statusline+=\                                               " padding space
-set statusline+=%*                                              " primary colour
-set statusline+=\                                               " padding space
-set statusline+=%c,                                             " cursor column
-set statusline+=%l/%L                                           " cursor line/total lines
-set statusline+=\                                               " padding space
+if exists("*strftime")
+        set statusline+=%{strftime('\ %A\ %Y/%m/%d\ %H:%M\ ')}  " time and date
+endif
 set statusline+=%1*                                             " primary colour
 set statusline+=\                                               " padding space
+set statusline+=%c,                                             " cursor column
+set statusline+=%l                                              " cursor line/total lines
+set statusline+=\                                               " padding space
+set statusline+=%2*                                             " secondary color
 set statusline+=%P                                              " percent through file
 set statusline+=\                                               " padding space
+
+" update statusbar once per second automatically
+let timer = timer_start(1000, 'UpdateStatusBar', {'repeat':-1})
+function! UpdateStatusBar(timer)
+        execute 'let &ro = &ro'
+endfunction
 
 """"""""""
 " Colors "
