@@ -51,6 +51,9 @@ xnoremap <F9> <ESC>:source $MYVIMRC<CR>gv
 onoremap <F9> <ESC>:source $MYVIMRC<CR>
 inoremap <F9> <C-o>:source $MYVIMRC<CR>
 
+" Use ';' as mapleader instead of '/' 
+let g:mapleader = ";"
+
 """""""""
 " Files "
 """""""""
@@ -70,6 +73,71 @@ set autoread
 
 " Ignore some file extensions when completing names by pressing Tab
 set wildignore=*.swp,*.bak,*.pyc,*.class,*.o,*.obj,*~
+
+""""""""
+" Text "
+""""""""
+
+" Binary mode switch
+nnoremap <F4> :set binary!<CR>
+xnoremap <F4> <ESC>:set binary!<CR>gv
+onoremap <F4> <ESC>:set binary!<CR>
+inoremap <F4> <C-o>:set binary!<CR>
+
+" Set font for GUI
+if has('gui_running')
+        if has('unix')
+                try
+                        set guifont=monospace\ 10
+                catch
+                        echo "Font Monospace was not set!"
+                endtry
+        else
+                try
+                        set guifont=Consolas:h10
+                catch
+                        echo "Font Consolas was not set!"
+	        endtry
+        endif
+endif
+
+" 1 tab == 8 spaces
+set expandtab
+set shiftwidth=8
+set tabstop=8
+
+" Don't wrap lines
+set nowrap
+
+" Always set autoindenting on
+set autoindent
+
+" C style indentation
+set cindent
+
+" Copy the previous indentation on autoindenting
+set copyindent
+
+" Move lines using ALT+[jk]
+if has('unix')
+        execute "set <M-j>=\ej"
+        execute "set <M-k>=\ek"
+endif
+" Single line in normal mode:
+nnoremap <silent> <M-j> @='ma:.,.m ''a+1<C-V><CR>`a'<CR>
+nnoremap <silent> <M-k> @='ma:.,.m ''a-2<C-V><CR>`a'<CR>
+" Selected lines in visual mode
+xnoremap <silent> <M-j> @='<C-V><ESC>`<ma:exe line("''<").",".line("''>")."m ''>+1"<C-V><CR>`agv'<CR>
+xnoremap <silent> <M-k> @='<C-V><ESC>`<ma:exe line("''<").",".line("''>")."m ''<-2"<C-V><CR>`agv'<CR>
+
+" Fold based on indent
+set foldmethod=indent
+
+" Deepest fold is 3 levels
+set foldnestmax=3
+
+" Don`t fold by default
+set nofoldenable
 
 """"""""""""""""""""""
 " VIM user interface "
@@ -249,71 +317,6 @@ function! UpdateStatusBar(timer)
         execute 'let &ro = &ro'
 endfunction
 
-""""""""
-" Text "
-""""""""
-
-" Binary mode switch
-nnoremap <F4> :set binary!<CR>
-xnoremap <F4> <ESC>:set binary!<CR>gv
-onoremap <F4> <ESC>:set binary!<CR>
-inoremap <F4> <C-o>:set binary!<CR>
-
-" Set font for GUI
-if has('gui_running')
-        if has('unix')
-                try
-                        set guifont=monospace\ 10
-                catch
-                        echo "Font Monospace was not set!"
-                endtry
-        else
-                try
-                        set guifont=Consolas:h10
-                catch
-                        echo "Font Consolas was not set!"
-	        endtry
-        endif
-endif
-
-" 1 tab == 8 spaces
-set expandtab
-set shiftwidth=8
-set tabstop=8
-
-" Don't wrap lines
-set nowrap
-
-" Always set autoindenting on
-set autoindent
-
-" C style indentation
-set cindent
-
-" Copy the previous indentation on autoindenting
-set copyindent
-
-" Move lines using ALT+[jk]
-if has('unix')
-        execute "set <M-j>=\ej"
-        execute "set <M-k>=\ek"
-endif
-" Single line in normal mode:
-nnoremap <silent> <M-j> @='ma:.,.m ''a+1<C-V><CR>`a'<CR>
-nnoremap <silent> <M-k> @='ma:.,.m ''a-2<C-V><CR>`a'<CR>
-" Selected lines in visual mode
-xnoremap <silent> <M-j> @='<C-V><ESC>`<ma:exe line("''<").",".line("''>")."m ''>+1"<C-V><CR>`agv'<CR>
-xnoremap <silent> <M-k> @='<C-V><ESC>`<ma:exe line("''<").",".line("''>")."m ''<-2"<C-V><CR>`agv'<CR>
-
-" Fold based on indent
-set foldmethod=indent
-
-" Deepest fold is 3 levels
-set foldnestmax=3
-
-" Don`t fold by default
-set nofoldenable
-
 """"""""""
 " search "
 """"""""""
@@ -377,10 +380,6 @@ cnoremap <C-h> <LEFT>
 cnoremap <C-j> <DOWN>
 cnoremap <C-k> <UP>
 cnoremap <C-l> <RIGHT>
-
-" Use ',' as mapleader instead of '/' 
-let mapleader = ","
-let g:mapleader = ","
 
 " :W sudo saves the file on unix systems
 if has ('unix')
