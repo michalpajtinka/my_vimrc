@@ -7,14 +7,14 @@
 " General "
 """""""""""
 
-" Store path to ~/.vim or ~/vimfile to variable $VIMHOME
+" Store path to .vim (or vimfiles) to variable $VIMHOME
 if has('win32') || has ('win64') || has('win16')
         let $VIMHOME = $VIM.'\vimfiles'
 else
         let $VIMHOME = $HOME.'/.vim'
 endif
 
-" Make sure "~/.vim" or "~/vimfiles" exist
+" Make sure .vim (or vimfiles) exist
 if !isdirectory($VIMHOME) 
         silent call mkdir($VIMHOME, 'p')
 endif
@@ -112,6 +112,50 @@ endif
 " Characters to fill the statuslines and vertical separators
 set fillchars=stl:\ ,stlnc:\ ,vert:│
 
+""""""""""
+" Colors "
+""""""""""
+
+" Default colorscheme
+try
+        if has('gui_running')
+                colorscheme koehler
+        else
+                colorscheme ron
+        endif
+catch
+        echo "Colorscheme missing!"
+endtry
+
+" Enable 256 colors palette in Gnome Terminal
+if $COLORTERM == 'gnome-terminal'
+    set t_Co=256
+endif
+
+set background=dark
+
+" Enable syntax highlighting
+syntax enable
+
+" Show matching brackets when text indicator is over them
+set showmatch
+
+" Define custom highlight groups
+function! Highlight()
+    	highlight User1 cterm=bold ctermbg=white ctermfg=black gui=bold guibg=#FFFFFF guifg=#000000
+    	highlight User2 cterm=bold ctermbg=white ctermfg=red gui=bold guibg=#FFFFFF guifg=#CC0000
+    	highlight StatusLineNC cterm=bold ctermbg=white ctermfg=black gui=bold guibg=#FFFFFF guifg=#888888
+endfunction
+
+" Highlight() function has to run on startup, but also when the
+" ColorScheme autocommand is used, because colour schemes should always
+" start with :highlight clear, which would break colours of statusline
+call Highlight()
+augroup highlight
+        autocmd!
+        autocmd ColorScheme * call Highlight()
+augroup end
+
 """""""""""""""
 " Status line "
 """""""""""""""
@@ -142,7 +186,7 @@ let g:currentmode={
         \ 't'  : 'TERMINAL',
         \}
 
-" Automatically change the color of mode
+" Automatically change the colour according to current mode
 function! SetModeColour()
         if (mode() =~# '\v(n|no)')
                 exe 'hi! StatusLine cterm=bold ctermbg=green ctermfg=black gui=bold guibg=#99CC00 guifg=#115500'
@@ -158,22 +202,6 @@ function! SetModeColour()
 
         return ''
 endfunction
-
-" Define custom highlight groups
-function! Highlight()
-    	highlight User1 cterm=bold ctermbg=white ctermfg=black gui=bold guibg=#FFFFFF guifg=#000000
-    	highlight User2 cterm=bold ctermbg=white ctermfg=red gui=bold guibg=#FFFFFF guifg=#CC0000
-    	highlight StatusLineNC cterm=bold ctermbg=white ctermfg=black gui=bold guibg=#FFFFFF guifg=#888888
-endfunction
-
-" Highlight() function has to run on startup, but also when the
-" ColorScheme autocommand is used, because Colour schemes should always
-" start with :highlight clear, which would break colours of statusline
-call Highlight()
-augroup highlight
-        autocmd!
-        autocmd ColorScheme * call Highlight()
-augroup end
 
 " Format the status line
 set statusline=%{SetModeColour()}                               " default colour, mode dependent
@@ -197,11 +225,11 @@ set statusline+=%*                                              " default colour
 set statusline+=\                                               " padding space
 set statusline+=>\ %{toupper(&ff)}\ >\                          " file format
 set statusline+=%{strlen(&fenc)?toupper(&fenc).'\ >\ ':''}      " file encoding
-set statusline+=%{&mod?'MODIFIED\ >\ ':''}                      " modified
-set statusline+=%{&ma?'':'UNMODIFIABLE\ >\ '}                   " modifiable
-set statusline+=%{&ro?'READ\ ONLY\ >\ ':''}                     " read only
-set statusline+=%{&pvw?'PREVIEW\ >\ ':''}                       " preview window
-set statusline+=%{&bin?'BINARY\ >\ ':''}                        " binary
+set statusline+=%{&mod?'MODIFIED\ >\ ':''}                      " modified flag
+set statusline+=%{&ma?'':'UNMODIFIABLE\ >\ '}                   " modifiable flag
+set statusline+=%{&ro?'READ\ ONLY\ >\ ':''}                     " read only flag
+set statusline+=%{&pvw?'PREVIEW\ >\ ':''}                       " preview window flag
+set statusline+=%{&bin?'BINARY\ >\ ':''}                        " binary mode indicator
 set statusline+=%=                                              " left/right break
 if exists("*strftime")
         set statusline+=%{strftime('\ %A\ %Y/%m/%d\ %H:%M\ ')}  " time and date
@@ -215,39 +243,11 @@ set statusline+=%2*                                             " secondary colo
 set statusline+=%P                                              " percent through file
 set statusline+=\                                               " padding space
 
-" update statusbar once per second automatically
+" Update status line once per second automatically
 let timer = timer_start(1000, 'UpdateStatusBar', {'repeat':-1})
 function! UpdateStatusBar(timer)
         execute 'let &ro = &ro'
 endfunction
-
-""""""""""
-" Colors "
-""""""""""
-
-" Default colorscheme
-try
-        if has('gui_running')
-                colorscheme koehler
-        else
-                colorscheme ron
-        endif
-catch
-        echo "Colorscheme missing!"
-endtry
-
-" Enable 256 colors palette in Gnome Terminal
-if $COLORTERM == 'gnome-terminal'
-    set t_Co=256
-endif
-
-set background=dark
-
-" Enable syntax highlighting
-syntax enable
-
-" Show matching brackets when text indicator is over them
-set showmatch
 
 """"""""
 " Text "
@@ -298,20 +298,20 @@ if has('unix')
         execute "set <M-j>=\ej"
         execute "set <M-k>=\ek"
 endif
-" single line in normal mode:
+" Single line in normal mode:
 nnoremap <silent> <M-j> @='ma:.,.m ''a+1<C-V><CR>`a'<CR>
 nnoremap <silent> <M-k> @='ma:.,.m ''a-2<C-V><CR>`a'<CR>
-" selected lines in visual mode
+" Selected lines in visual mode
 xnoremap <silent> <M-j> @='<C-V><ESC>`<ma:exe line("''<").",".line("''>")."m ''>+1"<C-V><CR>`agv'<CR>
 xnoremap <silent> <M-k> @='<C-V><ESC>`<ma:exe line("''<").",".line("''>")."m ''<-2"<C-V><CR>`agv'<CR>
 
-" fold based on indent
+" Fold based on indent
 set foldmethod=indent
 
-" deepest fold is 3 levels
+" Deepest fold is 3 levels
 set foldnestmax=3
 
-" dont fold by default
+" Don`t fold by default
 set nofoldenable
 
 """"""""""
@@ -372,7 +372,7 @@ inoremap " ""<ESC>i
 " inoremap ` ``<ESC>i
 " inoremap < <><ESC>i
 
-" search history using CTRL and h, j, k, and l
+" Search history using CTRL and h, j, k, and l
 cnoremap <C-h> <LEFT>
 cnoremap <C-j> <DOWN>
 cnoremap <C-k> <UP>
@@ -397,7 +397,7 @@ if has ('unix')
         onoremap <LEADER>W <ESC>:W<CR>
 endif
 
-" Fast save and quit
+" Fast quit
 nnoremap <LEADER>q :q<CR>
 vnoremap <LEADER>q <ESC>:q<CR>
 onoremap <LEADER>q <ESC>:q<CR>
@@ -407,7 +407,17 @@ nnoremap <CR> i<CR><ESC>
 vnoremap <CR> <DEL>i<CR><ESC>
 onoremap <CR> <ESC>i<CR><ESC>
 
-" New line without entering insertmode
+" BACKSPACE without entering insert mode
+nnoremap <BS> X
+vnoremap <BS> <DEL>
+onoremap <BS> <ESC>X
+
+" SPACE without entering insert mode
+nnoremap <SPACE> i<SPACE><ESC>l
+vnoremap <SPACE> <DEL>i<SPACE><ESC>l
+onoremap <SPACE> <ESC>i<SPACE><ESC>l
+
+" NEW LINE without entering insert mode
 nnoremap <LEADER>o o<ESC>
 nnoremap <LEADER>O O<ESC>
 
