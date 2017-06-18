@@ -74,15 +74,12 @@ set autoread
 " Ignore some file extensions when completing names by pressing Tab
 set wildignore=*.swp,*.bak,*.pyc,*.class,*.o,*.obj,*~
 
+" Don't create backup files
+set nobackup
+
 """"""""
 " Text "
 """"""""
-
-" Binary mode switch
-nnoremap <F4> :set binary!<CR>
-xnoremap <F4> <ESC>:set binary!<CR>gv
-onoremap <F4> <ESC>:set binary!<CR>
-inoremap <F4> <C-o>:set binary!<CR>
 
 " Set font for GUI
 if has('gui_running')
@@ -101,22 +98,37 @@ if has('gui_running')
         endif
 endif
 
-" 1 tab == 8 spaces
-set expandtab
-set shiftwidth=8
-set tabstop=8
+" Tab settings
+augroup tab_settins
+        autocmd!
+        autocmd FileType c,cpp,vim,sh,python setlocal expandtab shiftwidth=8 tabstop=8
+        autocmd FileType text,tex,latex,context,plaintex,make setlocal noexpandtab shiftwidth=4 tabstop=4
+augroup END
 
-" Don't wrap lines
-set nowrap
+" Wrap lines settings
+augroup wrap_settins
+        autocmd!
+        autocmd FileType c,cpp,python setlocal wrap textwidth=80
+        autocmd FileType vim,sh setlocal nowrap
+        autocmd FileType text,tex,latex,context,plaintex,make setlocal nowrap
+augroup END
 
-" Always set autoindenting on
-set autoindent
+" Autoindenting settings
+augroup indent_settings
+        autocmd!
+        autocmd FileType c,cpp,python,vim,sh setlocal autoindent cindent copyindent
+        autocmd FileType tex,latex,context,plaintex,make setlocal autoindent copyindent
+        autocmd FileType text setlocal noautoindent
+augroup END
 
-" C style indentation
-set cindent
+" Fold based on indent
+set foldmethod=indent
 
-" Copy the previous indentation on autoindenting
-set copyindent
+" Deepest fold is 3 levels
+set foldnestmax=3
+
+" Don`t fold by default
+set nofoldenable
 
 " Move lines using ALT+[jk]
 if has('unix')
@@ -130,15 +142,6 @@ nnoremap <silent> <M-k> @='ma:.,.m ''a-2<C-V><CR>`a'<CR>
 xnoremap <silent> <M-j> @='<C-V><ESC>`<ma:exe line("''<").",".line("''>")."m ''>+1"<C-V><CR>`agv'<CR>
 xnoremap <silent> <M-k> @='<C-V><ESC>`<ma:exe line("''<").",".line("''>")."m ''<-2"<C-V><CR>`agv'<CR>
 
-" Fold based on indent
-set foldmethod=indent
-
-" Deepest fold is 3 levels
-set foldnestmax=3
-
-" Don`t fold by default
-set nofoldenable
-
 """"""""""""""""""""""
 " VIM user interface "
 """"""""""""""""""""""
@@ -146,8 +149,11 @@ set nofoldenable
 " Never show status indicator (I have one on statusline)
 set noshowmode
 
-" Show line numbers by default
-set nu
+" Show/Hide line number by default
+augroup line_number_settins
+        autocmd!
+        autocmd FileType c,cpp,python,vim,sh,make setlocal number
+augroup END
 
 " Show/hide line numbers when F3 is pressed
 nnoremap <F3> :set nu!<CR>
@@ -155,9 +161,9 @@ xnoremap <F3> <ESC>:set nu!<CR>gv
 snoremap <F3> <ESC>:set nu!<CR>
 onoremap <F3> <ESC>:set nu!<CR>
 inoremap <F3> <C-o>:set nu!<CR>
-
-" Always show current position
-set ruler
+        
+" Never show current position (I have one on status line)
+set noruler
 
 " Configure backspace so it acts as it should act
 set backspace=eol,start,indent
@@ -362,18 +368,35 @@ onoremap <silent> zP <ESC>aX<LEFT><CR><DEL><C-o>d^<ESC>:.-1r <C-R>=$BUFF<CR><CR>
 " Hacks "
 """""""""
 
+" Binary mode switch
+nnoremap <F4> :set binary!<CR>
+xnoremap <F4> <ESC>:set binary!<CR>gv
+onoremap <F4> <ESC>:set binary!<CR>
+inoremap <F4> <C-o>:set binary!<CR>
+
 " jj sequance as ESC
 inoremap jj <ESC>
 snoremap jj <ESC>
 
-" Automatically add closing for { ( [ ' " ` <
-inoremap { {<CR>}<ESC>kA<CR><TAB>
+" Automatically add closing for ( [ ' "
 inoremap ( ()<ESC>i
 inoremap [ []<ESC>i
 inoremap ' ''<ESC>i
 inoremap " ""<ESC>i
-" inoremap ` ``<ESC>i
-" inoremap < <><ESC>i
+
+" Curly brackets closings
+augroup curly_brackets_closing
+        autocmd!
+        autocmd FileType c,cpp inoremap <buffer> { {<CR>}<ESC>kA<CR>
+        autocmd FileType sh inoremap <buffer> { {}<ESC>i
+augroup END
+
+" Comments closing
+augroup comments_closing
+        autocmd!
+        autocmd FileType c,cpp inoremap <buffer> /* /*<SPACE><SPACE>*/<ESC>hhi
+augroup END
+
 
 " Search history using CTRL and h, j, k, and l
 cnoremap <C-h> <LEFT>
