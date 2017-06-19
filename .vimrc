@@ -395,6 +395,7 @@ augroup END
 augroup comments_closing
         autocmd!
         autocmd FileType c,cpp inoremap <buffer> /* /*<SPACE><SPACE>*/<ESC>hhi
+        autocmd FileType c,cpp inoremap <buffer> /** /**<CR><CR>/<ESC>kA<SPACE>
 augroup END
 
 
