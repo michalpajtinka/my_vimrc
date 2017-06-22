@@ -77,6 +77,9 @@ set wildignore=*.swp,*.bak,*.pyc,*.class,*.o,*.obj,*~
 " Don't create backup files
 set nobackup
 
+" Use strongest encryption
+setlocal cryptmethod=blowfish2
+
 """"""""
 " Text "
 """"""""
@@ -156,11 +159,11 @@ augroup line_number_settins
 augroup END
 
 " Show/hide line numbers when F3 is pressed
-nnoremap <F3> :set nu!<CR>
-xnoremap <F3> <ESC>:set nu!<CR>gv
-snoremap <F3> <ESC>:set nu!<CR>
-onoremap <F3> <ESC>:set nu!<CR>
-inoremap <F3> <C-o>:set nu!<CR>
+nnoremap <F4> :set nu!<CR>
+xnoremap <F4> <ESC>:set nu!<CR>gv
+snoremap <F4> <ESC>:set nu!<CR>
+onoremap <F4> <ESC>:set nu!<CR>
+inoremap <F4> <C-o>:set nu!<CR>
         
 " Never show current position (I have one on status line)
 set noruler
@@ -289,6 +292,7 @@ set statusline+=\                                               " padding space
 set statusline+=%{g:currentmode[mode()]}                        " current mode
 set statusline+=\                                               " padding space
 set statusline+=%{&paste?'(paste)\ ':''}                        " paste status
+set statusline+=%{&bin?'\|BINARY\|\ ':''}                       " binary mode indicator
 set statusline+=%1*                                             " primary colour
 set statusline+=\                                               " padding space
 set statusline+=\"%t\"                                          " file name
@@ -303,19 +307,29 @@ set statusline+=%{&mod?'MODIFIED\ >\ ':''}                      " modified flag
 set statusline+=%{&ma?'':'UNMODIFIABLE\ >\ '}                   " modifiable flag
 set statusline+=%{&ro?'READ\ ONLY\ >\ ':''}                     " read only flag
 set statusline+=%{&pvw?'PREVIEW\ >\ ':''}                       " preview window flag
-set statusline+=%{&bin?'BINARY\ >\ ':''}                        " binary mode indicator
+set statusline+=%{strlen(&key)?'ENCRIPTED':''}			" encrypted?
 set statusline+=%=                                              " left/right break
-if exists("*strftime")
-        set statusline+=%{strftime('\ %A\ %Y/%m/%d\ %H:%M\ ')}  " time and date
-endif
 set statusline+=%1*                                             " primary colour
+set statusline+=\                                               " padding space
+if exists("*strftime")
+        set statusline+=%{strftime('%A\ %Y/%m/%d\ %H:%M\ ')}    " time and date
+endif
+set statusline+=%*                                              " main color
 set statusline+=\                                               " padding space
 set statusline+=%c,                                             " cursor column
 set statusline+=%l                                              " cursor line/total lines
 set statusline+=\                                               " padding space
-set statusline+=%2*                                             " secondary color
 set statusline+=%P                                              " percent through file
 set statusline+=\                                               " padding space
+
+" Set noncurrent statusline format
+let g:Active_statusline=&g:statusline
+let g:Nonactive_statusline=' <buf %n> "%t" %M'
+augroup status_line_change
+	autocmd!
+	autocmd WinEnter * let &l:statusline=g:Active_statusline
+	autocmd WinLeave * let &l:statusline=g:Nonactive_statusline
+augroup END
 
 " Update status line once per second automatically
 let timer = timer_start(1000, 'UpdateStatusBar', {'repeat':-1})
@@ -369,20 +383,22 @@ onoremap <silent> zP <ESC>aX<LEFT><CR><DEL><C-o>d^<ESC>:.-1r <C-R>=$BUFF<CR><CR>
 """""""""
 
 " Binary mode switch
-nnoremap <F4> :set binary!<CR>
-xnoremap <F4> <ESC>:set binary!<CR>gv
-onoremap <F4> <ESC>:set binary!<CR>
-inoremap <F4> <C-o>:set binary!<CR>
+nnoremap <F3> :set binary!<CR>
+xnoremap <F3> <ESC>:set binary!<CR>gv
+onoremap <F3> <ESC>:set binary!<CR>
+inoremap <F3> <C-o>:set binary!<CR>
 
 " jj sequance as ESC
 inoremap jj <ESC>
 snoremap jj <ESC>
 
-" Automatically add closing for ( [ ' "
+" Automatically add closing for ( [ '
 inoremap ( ()<ESC>i
 inoremap [ []<ESC>i
 inoremap ' ''<ESC>i
-inoremap " ""<ESC>i
+
+" Automatically add closing for '"' in all filetypes but vim 
+inoremap <expr> " &ft !=# 'vim' ? '""<ESC>i' : '"'
 
 " Curly brackets closings
 augroup curly_brackets_closing
@@ -604,7 +620,7 @@ inoremap <C-l> <C-o><C-w>l
 " inoremap <C-k> <C-o><C-w>k<C-o><C-w>_<C-o><C-w><BAR>
 " inoremap <C-l> <C-o><C-w>l<C-o><C-w>_<C-o><C-w><BAR>
 
-" Easily resize windows after split
+" Easily resize windows after split, may not work in console vim
 " in normal mode:
 nnoremap <A-UP> <C-w>+
 nnoremap <A-DOWN> <C-w>-
