@@ -133,17 +133,26 @@ set foldnestmax=3
 " Don`t fold by default
 set nofoldenable
 
-" Move lines using ALT+[jk]
+" Move lines/selection using ALT+[hjkl]
 if has('unix')
         execute "set <M-j>=\ej"
         execute "set <M-k>=\ek"
+        execute "set <M-h>=\eh"
+        execute "set <M-l>=\el"
+        execute "set <M-J>=\eJ"
+        execute "set <M-K>=\eK"
 endif
-" Single line in normal mode:
-nnoremap <silent> <M-j> @='ma:.,.m ''a+1<C-V><CR>`a'<CR>
+" Single line up/down in normal mode:
 nnoremap <silent> <M-k> @='ma:.,.m ''a-2<C-V><CR>`a'<CR>
-" Selected lines in visual mode
-xnoremap <silent> <M-j> @='<C-V><ESC>`<ma:exe line("''<").",".line("''>")."m ''>+1"<C-V><CR>`agv'<CR>
-xnoremap <silent> <M-k> @='<C-V><ESC>`<ma:exe line("''<").",".line("''>")."m ''<-2"<C-V><CR>`agv'<CR>
+nnoremap <silent> <M-j> @='ma:.,.m ''a+1<C-V><CR>`a'<CR>
+" Whole lines up/down in visual mode 
+vnoremap <silent> <M-K> @='<C-V><ESC>`<ma:exe line("''<").",".line("''>")."m ''<-2"<C-V><CR>`agv'<CR>
+vnoremap <silent> <M-J> @='<C-V><ESC>`<ma:exe line("''<").",".line("''>")."m ''>+1"<C-V><CR>`agv'<CR>
+" Move only selection up/down/right/left
+vnoremap <silent> <M-k> @='xP`[v`]xkP`[v`]'<CR>
+vnoremap <silent> <M-j> @='xP`[v`]xjP`[v`]'<CR>
+vnoremap <silent> <M-h> @='xP`[v`]xhP`[v`]'<CR>
+vnoremap <silent> <M-l> @='xP`[v`]xlP`[v`]'<CR>
 
 """"""""""""""""""""""
 " VIM user interface "
@@ -274,7 +283,7 @@ function! SetModeColour()
         elseif (mode() =~# '\v(v|V||s|S|)')
                 exe 'hi! StatusLine cterm=bold ctermbg=yellow ctermfg=black gui=bold guibg=#FF9900 guifg=#663300'
         else
-                exe 'hi! StatusLine cterm=bold ctermbg=black ctermfg=white gui=bold guibg=#333333 guifg=#FFFFFF'
+                exe 'hi! StatusLine cterm=bold ctermbg=white ctermfg=black gui=bold guibg=#FFFFFF guifg=#000000'
         endif
 
         return ''
