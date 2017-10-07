@@ -291,17 +291,15 @@ endfunction
 
 " Format the status line
 set statusline=%{SetModeColour()}                               " default colour, mode dependent
-set statusline+=%1*                                             " primary colour
-set statusline+=\                                               " padding space
-set statusline+=\<buf\ %n\>                                     " buffer number
-set statusline+=%{strlen(&bt)?'\ \|'.toupper(&bt).'\|':''}      " buffer type
-set statusline+=\                                               " padding space
-set statusline+=%*                                              " default colour
 set statusline+=\                                               " padding space
 set statusline+=%{g:currentmode[mode()]}                        " current mode
 set statusline+=\                                               " padding space
 set statusline+=%{&paste?'(paste)\ ':''}                        " paste status
 set statusline+=%{&bin?'\|BINARY\|\ ':''}                       " binary mode indicator
+set statusline+=%1*                                             " primary colour
+set statusline+=\                                               " padding space
+set statusline+=\<buf\ %n\>                                     " buffer number
+set statusline+=%{strlen(&bt)?'\ \|'.toupper(&bt).'\|':''}      " buffer type
 set statusline+=%1*                                             " primary colour
 set statusline+=\                                               " padding space
 set statusline+=\"%t\"                                          " file name
@@ -319,10 +317,18 @@ set statusline+=%{&pvw?'PREVIEW\ >\ ':''}                       " preview window
 set statusline+=%{strlen(&key)?'ENCRIPTED':''}			" encrypted?
 set statusline+=%=                                              " left/right break
 set statusline+=%1*                                             " primary colour
-set statusline+=\                                               " padding space
-if exists("*strftime")
+if exists('*strftime')
+        set statusline+=\                                       " padding space
         set statusline+=%{strftime('%A\ %Y/%m/%d\ %H:%M\ ')}    " time and date
 endif
+if has ('unix')
+	set statusline+=\ BAT:\  
+	let g:battery = '???'
+	autocmd CursorHold * let g:battery = system('upower -i $(upower -e | grep BAT)
+                \ | grep percentage | cut -d ":" -f 2 | tr -d " " | tr -d "\n"')
+	set statusline+=%{strlen(battery)?battery:'???'}
+endif
+set statusline+=\                                               " padding space
 set statusline+=%*                                              " main color
 set statusline+=\                                               " padding space
 set statusline+=%c,                                             " cursor column
@@ -423,6 +429,8 @@ augroup comments_closing
         autocmd FileType c,cpp inoremap <buffer> /** /**<CR><CR>/<ESC>kA<SPACE>
 augroup END
 
+" put selection into parentheses
+xnoremap ( <ESC>aX<ESC>gvxi()<ESC>maPllx`a
 
 " Search history using CTRL and h, j, k, and l
 cnoremap <C-h> <LEFT>
