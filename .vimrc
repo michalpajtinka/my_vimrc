@@ -1,7 +1,7 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " URL:     https://github.com/eamileann/my_vimrc "
 " Author:  Michal Pajtinka                       "
-" TODO:	                                         "
+" TODO:                                          "
 "       compatibility with Mac                   "
 "       battery level based on command presence  "
 "       battery info hiding/showing              "
