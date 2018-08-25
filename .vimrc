@@ -1,6 +1,6 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""
-" URL:     https://github.com/eamileann/my_vimrc "
-" Author:  Michal Pajtinka                       "
+" URL: 	   https://github.com/eamileann/my_vimrc "
+" Author:  Michal Pajtinka			 "
 " TODO:                                          "
 "       compatibility with Mac                   "
 "       battery level based on command presence  "
@@ -276,7 +276,7 @@ let g:currentmode={
         \ 'rm' : 'MORE',
         \ 'r?' : 'CONFIRM',
         \ '!'  : 'SHELL',
-        \ 't'  : 'TERMINAL',
+        \ 't'  : 'TERMINAL'
         \}
 
 " Automatically change the colour according to current mode
@@ -393,10 +393,11 @@ inoremap <silent> <F3> <C-o>:set binary!<CR>
 inoremap jj <ESC>
 snoremap jj <ESC>
 
-" Automatically add closing for ( [ '
+" Automatically add closing for ( [ ' `
 inoremap ( ()<ESC>i
 inoremap [ []<ESC>i
-inoremap ' ''<ESC>i
+inoremap '' ''<ESC>i
+inoremap `` ``<ESC>i
 
 " Automatically add closing for '"' in all filetypes but vim 
 inoremap <expr> " &ft !=# 'vim' ? '""<ESC>i' : '"'
@@ -415,11 +416,13 @@ augroup comments_closing
         autocmd FileType c,cpp inoremap <buffer> /** /**<CR><CR>/<ESC>kA<SPACE>
 augroup END
 
-" Enclose selection
+" Enclose selection (doesn`t work for VISUAL LINE mode)
 xnoremap <silent> ( mac()<ESC>P`al
 xnoremap <silent> [ mac[]<ESC>P`al
 xnoremap <silent> { mac{}<ESC>P`al
-xnoremap <silent> ' mac''<ESC>P`al
+xnoremap <silent> `` mac``<ESC>P`al
+xnoremap <silent> "" mac""<ESC>P`al
+xnoremap <silent> '' mac'<ESC>P`al
 xnoremap <silent> % mac%%<ESC>P`al
 xnoremap <silent> < mac<><ESC>P`al
 
