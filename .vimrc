@@ -1,6 +1,13 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""
 " URL: 	   https://github.com/eamileann/my_vimrc "
 " Author:  Michal Pajtinka			 "
+" TODO:                                          "
+"       compatibility with Mac                   "
+"       battery level based on command presence  "
+"       battery info hiding/showing              "
+"       statusline colours for WSL               "
+"       {} autocompletion for more special cases "
+"                                                "
 """"""""""""""""""""""""""""""""""""""""""""""""""
 
 """""""""""
@@ -46,10 +53,10 @@ augroup vimrc
 augroup END
 
 " Reload VIMRC file without restarting VIM
-nnoremap <F9> :source $MYVIMRC<CR>
-xnoremap <F9> <ESC>:source $MYVIMRC<CR>gv
-onoremap <F9> <ESC>:source $MYVIMRC<CR>
-inoremap <F9> <C-o>:source $MYVIMRC<CR>
+nnoremap <silent> <F9> :source $MYVIMRC<CR>
+xnoremap <silent> <F9> <ESC>:source $MYVIMRC<CR>gv
+onoremap <silent> <F9> <ESC>:source $MYVIMRC<CR>
+inoremap <silent> <F9> <C-o>:source $MYVIMRC<CR>
 
 " Use ';' as mapleader instead of '/' 
 let g:mapleader = ";"
@@ -168,11 +175,11 @@ augroup line_number_settins
 augroup END
 
 " Show/hide line numbers when F3 is pressed
-nnoremap <F4> :set nu!<CR>
-xnoremap <F4> <ESC>:set nu!<CR>gv
-snoremap <F4> <ESC>:set nu!<CR>
-onoremap <F4> <ESC>:set nu!<CR>
-inoremap <F4> <C-o>:set nu!<CR>
+nnoremap <silent> <F4> :set nu!<CR>
+xnoremap <silent> <F4> <ESC>:set nu!<CR>gv
+snoremap <silent> <F4> <ESC>:set nu!<CR>
+onoremap <silent> <F4> <ESC>:set nu!<CR>
+inoremap <silent> <F4> <C-o>:set nu!<CR>
         
 " Never show current position (I have one on status line)
 set noruler
@@ -347,7 +354,7 @@ augroup status_line_change
 augroup END
 
 " Update status line once per second automatically
-let timer = timer_start(1000, 'UpdateStatusBar', {'repeat':-1})
+let timer = timer_start(2000, 'UpdateStatusBar', {'repeat':-1})
 function! UpdateStatusBar(timer)
         execute 'let &ro = &ro'
 endfunction
@@ -372,36 +379,15 @@ noremap <silent> ,/ :noh<CR>
 " Enable/disable paste mode
 set pastetoggle=<F2>
 
-" Set address of temporary buffer
-if has('win32') || has ('win64') || has('win16')
-        let $BUFF = $VIMHOME.'\_vimbuf'
-else
-        let $BUFF = $VIMHOME.'/.vimbuf'
-endif 
-
-" Copy selection to temporary buffer
-xnoremap <silent> zy may:new<CR>p:silent! w! <C-R>=$BUFF<CR><CR>:q<CR>gv`a
-xnoremap <silent> zx x:new<CR>p:silent! w! <C-R>=$BUFF<CR><CR>:q<CR>
-
-" Place text from temp buff before cursor 
-nnoremap <silent> zp iX<LEFT><CR><DEL><C-o>d^<ESC>:.-1r <C-R>=$BUFF<CR><CR>ma`]A<DEL><ESC>`akA<DEL><ESC>`a
-vnoremap <silent> zp <DEL>iX<LEFT><CR><DEL><C-o>d^<ESC>:.-1r <C-R>=$BUFF<CR><CR>ma`]A<DEL><ESC>`akA<DEL><ESC>`a
-onoremap <silent> zp <ESC>iX<LEFT><CR><DEL><C-o>d^<ESC>:.-1r <C-R>=$BUFF<CR><CR>ma`]A<DEL><ESC>`akA<DEL><ESC>`a
-
-" Place text from temp buff after cursor
-nnoremap <silent> zP aX<LEFT><CR><DEL><C-o>d^<ESC>:.-1r <C-R>=$BUFF<CR><CR>ma`]A<DEL><ESC>`akA<DEL><ESC>`a
-vnoremap <silent> zP <DEL>aX<LEFT><CR><DEL><C-o>d^<ESC>:.-1r <C-R>=$BUFF<CR><CR>ma`]A<DEL><ESC>`akA<DEL><ESC>`a
-onoremap <silent> zP <ESC>aX<LEFT><CR><DEL><C-o>d^<ESC>:.-1r <C-R>=$BUFF<CR><CR>ma`]A<DEL><ESC>`akA<DEL><ESC>`a
-
 """""""""
 " Hacks "
 """""""""
 
 " Binary mode switch
-nnoremap <F3> :set binary!<CR>
-xnoremap <F3> <ESC>:set binary!<CR>gv
-onoremap <F3> <ESC>:set binary!<CR>
-inoremap <F3> <C-o>:set binary!<CR>
+nnoremap <silent> <F3> :set binary!<CR>
+xnoremap <silent> <F3> <ESC>:set binary!<CR>gv
+onoremap <silent> <F3> <ESC>:set binary!<CR>
+inoremap <silent> <F3> <C-o>:set binary!<CR>
 
 " jj sequance as ESC
 inoremap jj <ESC>
@@ -429,8 +415,13 @@ augroup comments_closing
         autocmd FileType c,cpp inoremap <buffer> /** /**<CR><CR>/<ESC>kA<SPACE>
 augroup END
 
-" put selection into parentheses
-xnoremap ( <ESC>aX<ESC>gvxi()<ESC>maPllx`a
+" Enclose selection
+xnoremap \q ( mac()<ESC>P`al
+xnoremap \q [ mac[]<ESC>P`al
+xnoremap \q { mac{}<ESC>P`al
+xnoremap \q " mac""<ESC>P`al
+xnoremap \q ' mac''<ESC>P`al
+xnoremap \q % mac%%<ESC>P`al
 
 " Search history using CTRL and h, j, k, and l
 cnoremap <C-h> <LEFT>
@@ -444,9 +435,9 @@ if has ('unix')
 endif
 
 " Fast save
-nnoremap <LEADER>w :w!<CR>
-xnoremap <LEADER>w <ESC>:w!<CR>gv
-onoremap <LEADER>w <ESC>:w!<CR>
+nnoremap <silent> <LEADER>w :w!<CR>
+xnoremap <silent> <LEADER>w <ESC>:w!<CR>gv
+onoremap <silent> <LEADER>w <ESC>:w!<CR>
 if has ('unix')
         nnoremap <LEADER>W :W<CR>
         xnoremap <LEADER>W <ESC>:W<CR>gv
@@ -454,9 +445,9 @@ if has ('unix')
 endif
 
 " Fast quit
-nnoremap <LEADER>q :q<CR>
-vnoremap <LEADER>q <ESC>:q<CR>
-onoremap <LEADER>q <ESC>:q<CR>
+nnoremap <silent> <LEADER>q :q<CR>
+vnoremap <silent> <LEADER>q <ESC>:q<CR>
+onoremap <silent> <LEADER>q <ESC>:q<CR>
 
 " ENTER key out of insert mode
 nnoremap <CR> i<CR><ESC>
@@ -521,7 +512,7 @@ nnoremap <LEADER>tl :silent! tabnext<CR>
 nnoremap <LEADER>th :silent! tabprevious<CR>
 
 " Opens a new tab with the current buffer's path
-nnoremap <LEADER>tt :tabedit <C-r>=expand("%:p:h")<CR><CR>
+nnoremap <silent> <LEADER>tt :tabedit <C-r>=expand("%:p:h")<CR><CR>
 
 " Toggle between this and the last accessed tab
 let g:lasttab = 1
@@ -532,17 +523,17 @@ augroup tab_leave
 augroup END
 
 " Switching buffers
-nnoremap <LEADER>bl :bnext<CR>
-nnoremap <LEADER>bh :bprevious<CR>
+nnoremap <silent> <LEADER>bl :bnext<CR>
+nnoremap <silent> <LEADER>bh :bprevious<CR>
 
 " Close all buffers but current
-nnoremap <LEADER>bo :tabmove<CR>:silent! exe '2,'.bufnr("$").'bdelete'<CR>
+nnoremap <silent> <LEADER>bo :tabmove<CR>:silent! exe '2,'.bufnr("$").'bdelete'<CR>
 
 " Close the current buffer
-nnoremap <LEADER>bc :bdelete!<CR>
+nnoremap <silent> <LEADER>bc :bdelete!<CR>
 
 " Close all the buffers   
-nnoremap <LEADER>BC :bufdo! bdelete!<CR>
+nnoremap <silent> <LEADER>BC :bufdo! bdelete!<CR>
 
 " Switch CWD to the directory of the open buffer
 nnoremap <LEADER>cd :cd %:p:h<CR>:pwd<CR>
@@ -637,29 +628,9 @@ inoremap <C-l> <C-o><C-w>l
 " inoremap <C-k> <C-o><C-w>k<C-o><C-w>_<C-o><C-w><BAR>
 " inoremap <C-l> <C-o><C-w>l<C-o><C-w>_<C-o><C-w><BAR>
 
-" Easily resize windows after split, may not work in console vim
+" Easily resize windows after split
 " in normal mode:
-nnoremap <A-UP> <C-w>+
-nnoremap <A-DOWN> <C-w>-
-nnoremap <A-LEFT> <C-w><
-nnoremap <A-RIGHT> <C-w>>
-" in visual mode:
-xnoremap <A-UP> <C-w>+
-xnoremap <A-DOWN> <C-w>-
-xnoremap <A-LEFT> <C-w><
-xnoremap <A-RIGHT> <C-w>>
-" in operator-pending mode:
-onoremap <A-UP> <ESC><C-w>+
-onoremap <A-DOWN> <ESC><C-w>-
-onoremap <A-LEFT> <ESC><C-w><
-onoremap <A-RIGHT> <ESC><C-w>>
-" in select  mode:
-snoremap <A-UP> <C-o><C-w>+
-snoremap <A-DOWN> <C-o><C-w>-
-snoremap <A-LEFT> <C-o><C-w><
-snoremap <A-RIGHT> <C-o><C-w>>
-" in insert and replace mode:
-inoremap <A-UP> <C-o><C-w>+
-inoremap <A-DOWN> <C-o><C-w>-
-inoremap <A-LEFT> <C-o><C-w><
-inoremap <A-RIGHT> <C-o><C-w>>
+nnoremap + <C-w>+
+nnoremap - <C-w>-
+nnoremap < <C-w><
+nnoremap > <C-w>>
