@@ -416,12 +416,12 @@ augroup comments_closing
 augroup END
 
 " Enclose selection
-xnoremap \q ( mac()<ESC>P`al
-xnoremap \q [ mac[]<ESC>P`al
-xnoremap \q { mac{}<ESC>P`al
-xnoremap \q " mac""<ESC>P`al
-xnoremap \q ' mac''<ESC>P`al
-xnoremap \q % mac%%<ESC>P`al
+xnoremap <silent> ( mac()<ESC>P`al
+xnoremap <silent> [ mac[]<ESC>P`al
+xnoremap <silent> { mac{}<ESC>P`al
+xnoremap <silent> ' mac''<ESC>P`al
+xnoremap <silent> % mac%%<ESC>P`al
+xnoremap <silent> < mac<><ESC>P`al
 
 " Search history using CTRL and h, j, k, and l
 cnoremap <C-h> <LEFT>
