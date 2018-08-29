@@ -3,9 +3,7 @@
 " Author:  Michal Pajtinka                       "
 " TODO:                                          "
 "       compatibility with Mac                   "
-"       battery level based on command presence  "
-"       battery info hiding/showing              "
-"       statusline colours for WSL               "
+"       GIT branch name and status of the file   "
 "       {} autocompletion for more special cases "
 "                                                "
 """"""""""""""""""""""""""""""""""""""""""""""""""
@@ -15,7 +13,7 @@
 """""""""""
 
 " Store path to .vim (or vimfiles) to variable $VIMHOME
-if has('win32') || has ('win64') || has('win16')
+if has('win16') || has('win32') || has ('win64')
         let $VIMHOME = $VIM.'\vimfiles'
 else
         let $VIMHOME = $HOME.'/.vim'
@@ -296,6 +294,42 @@ function! SetModeColour()
         return ''
 endfunction
 
+" Battery info is hidden by default, show it after pressing F12
+let g:showbattery = 0
+function! ToggleBattery()
+        let g:showbattery = g:showbattery==0 ? 1 : 0
+        execute 'let &ro = &ro'
+endfunction
+nnoremap <silent> <F12> :call ToggleBattery()<CR>
+xnoremap <silent> <F12> <ESC>:call ToggleBattery()<CR>gv
+snoremap <silent> <F12> <ESC>:call ToggleBattery()<CR>
+onoremap <silent> <F12> <ESC>:call ToggleBattery()<CR>
+inoremap <silent> <F12> <C-o>:call ToggleBattery()<CR>
+
+" Find remaining battery charge
+let g:battery='' 
+function! SetBattery()
+        if g:showbattery==0
+                let g:battery=''
+                return
+        endif
+
+        if has ('unix')
+                let l:battery = system("cat /sys/class/power_supply/*[Bb][Aa][Tt]*/capacity")
+        elseif has('win16') || has('win32') || has ('win64')
+                let l:battery = system("wmic path Win32_Battery get EstimatedChargeRemaining | findstr [0-9][0-9]*")
+        else
+                let l:battery = ""
+        endif
+
+        let l:battery = substitute(l:battery,  ' ', '', 'g')
+        let l:battery = substitute(l:battery, '\n', '', 'g')
+	let l:battery = substitute(l:battery, '\r', '', 'g')
+        let l:battery = l:battery=~'\D' || l:battery=='0' || l:battery=='' ? "???" : l:battery.'%'
+       
+        let g:battery = "BAT: ".l:battery.' '
+endfunction
+
 " Format the status line
 set statusline=%{SetModeColour()}                               " default colour, mode dependent
 set statusline+=\                                               " padding space
@@ -321,25 +355,20 @@ set statusline+=%{&mod?'MODIFIED\ >\ ':''}                      " modified flag
 set statusline+=%{&ma?'':'UNMODIFIABLE\ >\ '}                   " modifiable flag
 set statusline+=%{&ro?'READ\ ONLY\ >\ ':''}                     " read only flag
 set statusline+=%{&pvw?'PREVIEW\ >\ ':''}                       " preview window flag
-set statusline+=%{strlen(&key)?'ENCRIPTED':''}			" encrypted?
+set statusline+=%{strlen(&key)?'ENCRIPTED\ >\ ':''}		" encrypted?
 set statusline+=%=                                              " left/right break
 set statusline+=%1*                                             " primary colour
 if exists('*strftime')
         set statusline+=\                                       " padding space
         set statusline+=%{strftime('%A\ %Y/%m/%d\ %H:%M\ ')}    " time and date
 endif
-if has ('unix')
-	set statusline+=\ BAT:\  
-	let g:battery = '???'
-	autocmd CursorHold * let g:battery = system('upower -i $(upower -e | grep BAT)
-                \ | grep percentage | cut -d ":" -f 2 | tr -d " " | tr -d "\n"')
-	set statusline+=%{strlen(battery)?battery:'???'}
-endif
-set statusline+=\                                               " padding space
+set statusline+=%2*                                             " secondary colour
+set statusline+=%{g:battery}                                    " battery value
+set statusline+=%2*                                             " secondary colour
 set statusline+=%*                                              " main color
 set statusline+=\                                               " padding space
-set statusline+=%c,                                             " cursor column
-set statusline+=%l                                              " cursor line/total lines
+set statusline+=%l,                                             " cursor line
+set statusline+=%c                                              " cursor column
 set statusline+=\                                               " padding space
 set statusline+=%P                                              " percent through file
 set statusline+=\                                               " padding space
@@ -353,10 +382,11 @@ augroup status_line_change
 	autocmd WinLeave * let &l:statusline=g:Nonactive_statusline
 augroup END
 
-" Update status line once per second automatically
-let timer = timer_start(2000, 'UpdateStatusBar', {'repeat':-1})
+" Update status line once per 5 seconds
+let timer = timer_start(5000, 'UpdateStatusBar', {'repeat':-1})
 function! UpdateStatusBar(timer)
         execute 'let &ro = &ro'
+        call SetBattery()
 endfunction
 
 """"""""""
@@ -422,7 +452,7 @@ xnoremap <silent> [ mac[]<ESC>P`al
 xnoremap <silent> { mac{}<ESC>P`al
 xnoremap <silent> `` mac``<ESC>P`al
 xnoremap <silent> "" mac""<ESC>P`al
-xnoremap <silent> '' mac'<ESC>P`al
+xnoremap <silent> '' mac''<ESC>P`al
 xnoremap <silent> % mac%%<ESC>P`al
 xnoremap <silent> < mac<><ESC>P`al
 
@@ -637,3 +667,4 @@ nnoremap + <C-w>+
 nnoremap - <C-w>-
 nnoremap < <C-w><
 nnoremap > <C-w>>
+
