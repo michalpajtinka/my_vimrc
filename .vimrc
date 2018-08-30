@@ -298,13 +298,12 @@ endfunction
 let g:showbattery = 0
 function! ToggleBattery()
         let g:showbattery = g:showbattery==0 ? 1 : 0
-        execute 'let &ro = &ro'
 endfunction
-nnoremap <silent> <F12> :call ToggleBattery()<CR>
-xnoremap <silent> <F12> <ESC>:call ToggleBattery()<CR>gv
-snoremap <silent> <F12> <ESC>:call ToggleBattery()<CR>
-onoremap <silent> <F12> <ESC>:call ToggleBattery()<CR>
-inoremap <silent> <F12> <C-o>:call ToggleBattery()<CR>
+nnoremap <silent> <F12> :call ToggleBattery()<CR>:call SetBattery()<CR>
+xnoremap <silent> <F12> <ESC>:call ToggleBattery()<CR>:call SetBattery()<CR>gv
+snoremap <silent> <F12> <ESC>:call ToggleBattery()<CR>:call SetBattery()<CR>
+onoremap <silent> <F12> <ESC>:call ToggleBattery()<CR>:call SetBattery()<CR>
+inoremap <silent> <F12> <C-o>:call ToggleBattery()<CR><C-o>:call SetBattery()<CR>
 
 " Find remaining battery charge
 let g:battery='' 
@@ -329,6 +328,13 @@ function! SetBattery()
        
         let g:battery = "BAT: ".l:battery.' '
 endfunction
+
+" Update battery info time to time
+augroup battery_udpdate
+        autocmd!
+        autocmd CursorHold * call SetBattery()
+augroup END
+
 
 " Format the status line
 set statusline=%{SetModeColour()}                               " default colour, mode dependent
@@ -386,7 +392,6 @@ augroup END
 let timer = timer_start(5000, 'UpdateStatusBar', {'repeat':-1})
 function! UpdateStatusBar(timer)
         execute 'let &ro = &ro'
-        call SetBattery()
 endfunction
 
 """"""""""
