@@ -431,8 +431,8 @@ snoremap jj <ESC>
 " Automatically add closing for ( [ ' `
 inoremap ( ()<ESC>i
 inoremap [ []<ESC>i
-inoremap '' ''<ESC>i
-inoremap `` ``<ESC>i
+inoremap ' ''<ESC>i
+inoremap ` ``<ESC>i
 
 " Automatically add closing for '"' in all filetypes but vim 
 inoremap <expr> " &ft !=# 'vim' ? '""<ESC>i' : '"'
@@ -451,15 +451,15 @@ augroup comments_closing
         autocmd FileType c,cpp inoremap <buffer> /** /**<CR><CR>/<ESC>kA<SPACE>
 augroup END
 
-" Enclose selection (doesn`t work for VISUAL LINE mode)
-xnoremap <silent> ( mac()<ESC>P`al
-xnoremap <silent> [ mac[]<ESC>P`al
-xnoremap <silent> { mac{}<ESC>P`al
-xnoremap <silent> `` mac``<ESC>P`al
-xnoremap <silent> "" mac""<ESC>P`al
-xnoremap <silent> '' mac''<ESC>P`al
-xnoremap <silent> % mac%%<ESC>P`al
-xnoremap <silent> < mac<><ESC>P`al
+" Enclose selection
+xnoremap <silent> ( mac()<ESC>:call setreg('"',getregtype()==#'V'?substitute(@",'\n$','',''):@",getregtype()==#'V'?'c':getregtype())<CR>P`al
+xnoremap <silent> [ mac[]<ESC>:call setreg('"',getregtype()==#'V'?substitute(@",'\n$','',''):@",getregtype()==#'V'?'c':getregtype())<CR>P`al
+xnoremap <silent> { mac{}<ESC>:call setreg('"',getregtype()==#'V'?substitute(@",'\n$','',''):@",getregtype()==#'V'?'c':getregtype())<CR>P`al
+xnoremap <silent> `` mac``<ESC>:call setreg('"',getregtype()==#'V'?substitute(@",'\n$','',''):@",getregtype()==#'V'?'c':getregtype())<CR>P`al
+xnoremap <silent> "" mac""<ESC>:call setreg('"',getregtype()==#'V'?substitute(@",'\n$','',''):@",getregtype()==#'V'?'c':getregtype())<CR>P`al
+xnoremap <silent> '' mac''<ESC>:call setreg('"',getregtype()==#'V'?substitute(@",'\n$','',''):@",getregtype()==#'V'?'c':getregtype())<CR>P`al
+xnoremap <silent> % mac%%<ESC>:call setreg('"',getregtype()==#'V'?substitute(@",'\n$','',''):@",getregtype()==#'V'?'c':getregtype())<CR>P`al
+xnoremap <silent> < mac<><ESC>:call setreg('"',getregtype()==#'V'?substitute(@",'\n$','',''):@",getregtype()==#'V'?'c':getregtype())<CR>P`al
 
 " Search history using CTRL and h, j, k, and l
 cnoremap <C-h> <LEFT>
