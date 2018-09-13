@@ -452,14 +452,14 @@ augroup comments_closing
 augroup END
 
 " Enclose selection
-xnoremap <silent> ( mac()<ESC>:call setreg('"',getregtype()==#'V'?substitute(@",'\n$','',''):@",getregtype()==#'V'?'c':getregtype())<CR>P`al
-xnoremap <silent> [ mac[]<ESC>:call setreg('"',getregtype()==#'V'?substitute(@",'\n$','',''):@",getregtype()==#'V'?'c':getregtype())<CR>P`al
-xnoremap <silent> { mac{}<ESC>:call setreg('"',getregtype()==#'V'?substitute(@",'\n$','',''):@",getregtype()==#'V'?'c':getregtype())<CR>P`al
-xnoremap <silent> `` mac``<ESC>:call setreg('"',getregtype()==#'V'?substitute(@",'\n$','',''):@",getregtype()==#'V'?'c':getregtype())<CR>P`al
-xnoremap <silent> "" mac""<ESC>:call setreg('"',getregtype()==#'V'?substitute(@",'\n$','',''):@",getregtype()==#'V'?'c':getregtype())<CR>P`al
-xnoremap <silent> '' mac''<ESC>:call setreg('"',getregtype()==#'V'?substitute(@",'\n$','',''):@",getregtype()==#'V'?'c':getregtype())<CR>P`al
-xnoremap <silent> % mac%%<ESC>:call setreg('"',getregtype()==#'V'?substitute(@",'\n$','',''):@",getregtype()==#'V'?'c':getregtype())<CR>P`al
-xnoremap <silent> < mac<><ESC>:call setreg('"',getregtype()==#'V'?substitute(@",'\n$','',''):@",getregtype()==#'V'?'c':getregtype())<CR>P`al
+xnoremap <silent> ( mac()<ESC>:if getregtype()==#'V'<CR>call setreg('"',substitute(@",'\n$','',''),'c')<CR>endif<CR>P`al
+xnoremap <silent> [ mac[]<ESC>:if getregtype()==#'V'<CR>call setreg('"',substitute(@",'\n$','',''),'c')<CR>endif<CR>P`al
+xnoremap <silent> { mac{}<ESC>:if getregtype()==#'V'<CR>call setreg('"',substitute(@",'\n$','',''),'c')<CR>endif<CR>P`al
+xnoremap <silent> `` mac``<ESC>:if getregtype()==#'V'<CR>call setreg('"',substitute(@",'\n$','',''),'c')<CR>endif<CR>P`al
+xnoremap <silent> "" mac""<ESC>:if getregtype()==#'V'<CR>call setreg('"',substitute(@",'\n$','',''),'c')<CR>endif<CR>P`al
+xnoremap <silent> '' mac''<ESC>:if getregtype()==#'V'<CR>call setreg('"',substitute(@",'\n$','',''),'c')<CR>endif<CR>P`al
+xnoremap <silent> % mac%%<ESC>:if getregtype()==#'V'<CR>call setreg('"',substitute(@",'\n$','',''),'c')<CR>endif<CR>P`al
+xnoremap <silent> < mac<><ESC>:if getregtype()==#'V'<CR>call setreg('"',substitute(@",'\n$','',''),'c')<CR>endif<CR>P`al
 
 " Search history using CTRL and h, j, k, and l
 cnoremap <C-h> <LEFT>
