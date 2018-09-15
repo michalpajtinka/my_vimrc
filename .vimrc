@@ -370,7 +370,6 @@ if exists('*strftime')
 endif
 set statusline+=%2*                                             " secondary colour
 set statusline+=%{g:battery}                                    " battery value
-set statusline+=%2*                                             " secondary colour
 set statusline+=%*                                              " main color
 set statusline+=\                                               " padding space
 set statusline+=%l,                                             " cursor line
@@ -452,14 +451,14 @@ augroup comments_closing
 augroup END
 
 " Enclose selection
-xnoremap <silent> ( mac()<ESC>:if getregtype()==#'V'<CR>call setreg('"',substitute(@",'\n$','',''),'c')<CR>endif<CR>P`al
-xnoremap <silent> [ mac[]<ESC>:if getregtype()==#'V'<CR>call setreg('"',substitute(@",'\n$','',''),'c')<CR>endif<CR>P`al
-xnoremap <silent> { mac{}<ESC>:if getregtype()==#'V'<CR>call setreg('"',substitute(@",'\n$','',''),'c')<CR>endif<CR>P`al
-xnoremap <silent> `` mac``<ESC>:if getregtype()==#'V'<CR>call setreg('"',substitute(@",'\n$','',''),'c')<CR>endif<CR>P`al
-xnoremap <silent> "" mac""<ESC>:if getregtype()==#'V'<CR>call setreg('"',substitute(@",'\n$','',''),'c')<CR>endif<CR>P`al
-xnoremap <silent> '' mac''<ESC>:if getregtype()==#'V'<CR>call setreg('"',substitute(@",'\n$','',''),'c')<CR>endif<CR>P`al
-xnoremap <silent> % mac%%<ESC>:if getregtype()==#'V'<CR>call setreg('"',substitute(@",'\n$','',''),'c')<CR>endif<CR>P`al
-xnoremap <silent> < mac<><ESC>:if getregtype()==#'V'<CR>call setreg('"',substitute(@",'\n$','',''),'c')<CR>endif<CR>P`al
+xnoremap <silent> ( <ESC>:let p = &paste<CR>:set paste<CR>:let a = line2byte(line('.')) + col('.')<CR>gvc()<ESC>:if getregtype() ==# 'V'<CR>call setreg('"', substitute(@", '\n$', '', ''), 'c')<CR>endif<CR>P:exe "goto ".a<CR>:exe "let &paste=".p<CR>
+xnoremap <silent> [ <ESC>:let p = &paste<CR>:set paste<CR>:let a = line2byte(line('.')) + col('.')<CR>gvc[]<ESC>:if getregtype() ==# 'V'<CR>call setreg('"', substitute(@", '\n$', '', ''), 'c')<CR>endif<CR>P:exe "goto ".a<CR>:exe "let &paste=".p<CR>
+xnoremap <silent> { <ESC>:let p = &paste<CR>:set paste<CR>:let a = line2byte(line('.')) + col('.')<CR>gvc{}<ESC>:if getregtype() ==# 'V'<CR>call setreg('"', substitute(@", '\n$', '', ''), 'c')<CR>endif<CR>P:exe "goto ".a<CR>:exe "let &paste=".p<CR>
+xnoremap <silent> `` <ESC>:let p = &paste<CR>:set paste<CR>:let a = line2byte(line('.')) + col('.')<CR>gvc``<ESC>:if getregtype() ==# 'V'<CR>call setreg('"', substitute(@", '\n$', '', ''), 'c')<CR>endif<CR>P:exe "goto ".a<CR>:exe "let &paste=".p<CR>
+xnoremap <silent> "" <ESC>:let p = &paste<CR>:set paste<CR>:let a = line2byte(line('.')) + col('.')<CR>gvc""<ESC>:if getregtype() ==# 'V'<CR>call setreg('"', substitute(@", '\n$', '', ''), 'c')<CR>endif<CR>P:exe "goto ".a<CR>:exe "let &paste=".p<CR>
+xnoremap <silent> '' <ESC>:let p = &paste<CR>:set paste<CR>:let a = line2byte(line('.')) + col('.')<CR>gvc''<ESC>:if getregtype() ==# 'V'<CR>call setreg('"', substitute(@", '\n$', '', ''), 'c')<CR>endif<CR>P:exe "goto ".a<CR>:exe "let &paste=".p<CR>
+xnoremap <silent> % <ESC>:let p = &paste<CR>:set paste<CR>:let a = line2byte(line('.')) + col('.')<CR>gvc%%<ESC>:if getregtype() ==# 'V'<CR>call setreg('"', substitute(@", '\n$', '', ''), 'c')<CR>endif<CR>P:exe "goto ".a<CR>:exe "let &paste=".p<CR>
+xnoremap <silent> < <ESC>:let p = &paste<CR>:set paste<CR>:let a = line2byte(line('.')) + col('.')<CR>gvc<><ESC>:if getregtype() ==# 'V'<CR>call setreg('"', substitute(@", '\n$', '', ''), 'c')<CR>endif<CR>P:exe "goto ".a<CR>:exe "let &paste=".p<CR>
 
 " Search history using CTRL and h, j, k, and l
 cnoremap <C-h> <LEFT>
