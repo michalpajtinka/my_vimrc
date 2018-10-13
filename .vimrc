@@ -6,6 +6,7 @@
 "       compatibility with Mac                          "
 "       GIT branch name and status of the file          "
 "       {} autocompletion for more special cases        "
+"       fix bug when moving lines in line-wise mode     "
 "                                                       "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
