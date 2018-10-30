@@ -601,13 +601,13 @@ xnoremap <LEADER>v <C-w>vgv
 snoremap <LEADER>v <C-o><C-w>v
 onoremap <LEADER>v <ESC><C-w>v
 
-" Minimum window hight and width - current window is maximized
+" Minimum window height and width - current window is maximized
 " set winheight=999
 " set winminheight=0
 " set winwidth =999
 " set winminwidth=0
 
-" Minimum window hight and width - few lines/rows of each window are visible
+" Minimum window height and width - few lines/rows of each window are visible
 set winheight=5
 set winminheight=5
 set winwidth =20
