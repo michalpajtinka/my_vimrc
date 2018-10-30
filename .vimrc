@@ -59,7 +59,7 @@ onoremap <silent> <F9> <ESC>:source $MYVIMRC<CR>:noh<CR>
 inoremap <silent> <F9> <C-o>:source $MYVIMRC<CR>:noh<CR>
 
 " Use ';' as mapleader instead of '/' 
-let g:mapleader = ";"
+let g:mapleader=";"
 
 """""""""
 " Files "
