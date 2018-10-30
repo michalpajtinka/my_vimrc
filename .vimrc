@@ -1,6 +1,6 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " URL:     https://github.com/eamileann/my_vimrc        "
-" Author:  Michal Pajtinka                              "
+" Author:  Michal Pajtinka (michalpajtinka@gmail.com)   "
 " TODO:                                                 "
 "       change colour of statusline flag separator      "
 "       compatibility with Mac                          "
