@@ -111,8 +111,8 @@ endif
 " Tab settings
 augroup tab_settins
         autocmd!
-        autocmd FileType c,cpp,vim,sh,python setlocal expandtab shiftwidth=8 tabstop=8
-        autocmd FileType text,tex,latex,context,plaintex,make setlocal noexpandtab shiftwidth=4 tabstop=4
+        autocmd FileType c,cpp,vim,sh,python setlocal expandtab shiftwidth=8 tabstop=8 softtabstop=8 smarttab
+        autocmd FileType text,tex,latex,context,plaintex,make setlocal noexpandtab shiftwidth=4 tabstop=4 softtabstop=4 smarttab
 augroup END
 
 " Wrap lines settings
