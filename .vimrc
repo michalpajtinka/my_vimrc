@@ -118,8 +118,8 @@ augroup END
 " Wrap lines settings
 augroup wrap_settins
         autocmd!
-        autocmd FileType c,cpp,python setlocal wrap textwidth=80
-        autocmd FileType vim,sh setlocal nowrap
+        autocmd FileType c,cpp setlocal wrap textwidth=80
+        autocmd FileType vim,sh,python setlocal nowrap
         autocmd FileType text,tex,latex,context,plaintex,make setlocal nowrap
 augroup END
 
